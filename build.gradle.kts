@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
     id("org.springframework.boot") version "2.7.2-SNAPSHOT"
@@ -42,10 +43,16 @@ dependencyManagement {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "17"
+        jvmTarget = "18"
     }
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.withType<BootBuildImage> {
+    environment = mapOf("BP_JVM_VERSION" to "18")
+    buildpacks = listOf("gcr.io/paketo-buildpacks/amazon-corretto", "gcr.io/paketo-buildpacks/java")
+    tags = listOf("latest", "0.0.1")
 }
